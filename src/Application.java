@@ -14,7 +14,7 @@ import java.lang.Thread;
 
 /**
  * <h2>Clase Principal({@code Application})</h2>
- * El TimeTracker es un tipo de aplicación que nos permite crear una jerarquía de proyectos
+ * El TimeTracker es un tipo de aplicación que nos permite crear una jerarquía de actividades( proyectos o tareas)
  * y controlar el tiempo que dedicamos a cada una de estas actividades.
  *
  * Esta es la clases que controla al programa. Aquí podemos encontrar los tests para las
@@ -88,9 +88,9 @@ public class Application {
   }
 
   /**
-   * En este test creamos una jerarquía de proyectos y tareas partiendo del proyecto root y simulamos
+   * En este test creamos una jerarquía de proyectos y tareas partiendo del proyecto {@code rootProject} y simulamos
    * el funcionamiento real del proyecto poniendo tareas en marcha y parandolas. Así pues podemos observar
-   * también el correcto funcionamiento del reloj
+   * también el correcto funcionamiento del reloj.
    *
    * A partir de {@code rootProject} podremos comprobar si la jerarquía se ha construido correctamente
    * y al igual que en {@code testClock()} planificamos la impresión del árbol cada 2 segundos y ver como se van
@@ -185,7 +185,8 @@ public class Application {
   /**
    * Esta función implementa la persistencia de los datos de nuestra jerarquía. A partir de un objeto
    * de la clase {@code JSONWriter} ,que implementa la interfaz {@code Visitor}, guardamos en su atributo
-   * {@code jsonArray} un array de JSON que luego vamos a escribir como {@code String} en un archivo txt. Este
+   * {@code jsonArray} un {@code JSONArray}, que contendrá {@code JSONObjects} con información de Proyectos,
+   * Tareas o Intervalos, que luego vamos a escribir como {@code String} en un archivo txt. Este
    * archivo txt nos permitirá posteriormente recuperar la sesión.
    */
   public static void writeJSON()
@@ -198,7 +199,13 @@ public class Application {
       fw.close();
     }catch(IOException e){e.printStackTrace();}
   }
-  
+
+  /**
+   * Este método nos permite recuperar la sesión guardada en el archivo {@code jsonfile.txt}. De
+   * este modo construimos la jerarquía que tenemos guardada en el archivo sobre el proyecto raíz {@code rootProject}. Obtendremos
+   * la información de los {@code JSONObjects} guardados y los reconstruiremos como los objetos correspondientes
+   * a partir de su tipo({@code Project, Task, o Interval})
+   */
   public static void buildTreeFromJSON()
   {
     String rawdata="";
@@ -258,12 +265,24 @@ public class Application {
     }
     System.out.print("DONE");
   }
+
+  /**
+   * Este método nos permite imprimir la información del árbol por pantalla a partir de un
+   * objeto de la clase {@code InfoPrinter} que implementa la interfaz {@code Visitor}
+   */
   public static void printTree()
   {
     InfoPrinter printer=new InfoPrinter();
     rootProject.accept(printer);
 
   }
+
+  /**
+   *
+   * @param activity
+   * @param period
+   * @return
+   */
   public Duration TotalTimeSpent(Activity activity, timePeriods period)
   {
      return activity.TotalTimeSpent(period);

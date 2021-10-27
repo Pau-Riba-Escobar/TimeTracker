@@ -1,6 +1,12 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ * <h2>Clase Actividad({@code Activity})</h2>
+ * Esta clase contiene toda la información(atributos) y métodos que una Actividad(proyecto o tarea) debería tener. De una
+ * actividad necesitamos saber su nombre({@code name}), las fechas inicial({@code initialDateTime}) y final({@code finalDateTime}), su duración({@code duration}), si está activa() y cual
+ * es su proyecto padre({@code parentProject})
+ */
 public abstract class Activity {
 
   private String name;
@@ -51,8 +57,24 @@ public abstract class Activity {
     duration = Duration.ZERO;
     active = false;
   }*/
+
+  /**
+   * Método que nos permite implementar el patrón visitor en actividades. Es abstracta porque se va a redefinir de
+   * forma distinta en {@code Project} o {@code Task}
+   * @param visitor instancia de la clase que implementa al visitor
+   */
   public abstract void accept(Visitor visitor);
+
+  /**
+   * Función que nos permite imprimir la información de una Actividad. Redefinida en {@code Project} y {@code Task}
+   * @deprecated
+   */
   public abstract void printInfo();
   public abstract Duration TotalTimeSpent(timePeriods period);
+
+  /**
+   * Método que recalcula los parámetros de tiempo({@code initialDateTime,finalDateTime y duration}) de una actividad
+   * cuando sucede una actualización en el tiempo. Será diferente en el caso de {@code Task}  que en el de {@code Project}
+   */
   public abstract void recalculateTimes();
 }

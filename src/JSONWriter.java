@@ -5,6 +5,12 @@ import org.json.JSONObject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * <h2>Clase {@code JSONWriter}</h2>
+ * Implementación de la interfaz {@code Visitor} que permite construir un {@code JSONArray}, guardado en el atributo
+ * {@code jsonArray}, que nos permite almacenar la información de la jerarquía actual. Los métodos {@code visit()} construiran
+ * segun el caso({@code Task, Project o Interval}) un objeto {@code JSONObject} y lo meteran en {@code jsonArray}
+ */
 public class JSONWriter implements Visitor{
   private JSONArray jsonArray=new JSONArray();
   public JSONArray getJsonArray(){return jsonArray;}

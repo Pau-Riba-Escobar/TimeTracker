@@ -1,3 +1,8 @@
+/**
+ * <h2>Clase {@code InfoPrinter}</h2>
+ * Implementación de la interfaz {@code Visitor} que nos permite imprimir la información de los objetos de
+ * las clases {@code Task, Project y Interval}
+ */
 public class InfoPrinter implements Visitor{
   @Override
   public void visit(Task task) {
