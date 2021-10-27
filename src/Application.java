@@ -36,13 +36,13 @@ public class Application {
    */
   public static void main(String[] args)
   {
-    //Clock c = Clock.getInstance();
-    //c.startTimer();
+    // Clock c = Clock.getInstance();
+    // c.startTimer();
     //testCreateHierarchy();
-    //c.stopTimer();
-    //writeJSON();
+    // c.stopTimer();
+    // writeJSON();
     buildTreeFromJSON();
-    //testCreateHierarchy();
+    // testCreateHierarchy();
   }
 
   /**
@@ -65,25 +65,25 @@ public class Application {
     Project p=new Project("root");
     Task t = new Task("task");
     p.addActivity(t);
-    t.startTask(Clock.getInstance());
+    t.startTask();
     try {
       Thread.currentThread().sleep(5000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    t.stopTask(Clock.getInstance());
+    t.stopTask();
     try {
       Thread.currentThread().sleep(5000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    t.startTask(Clock.getInstance());
+    t.startTask();
     try {
       Thread.currentThread().sleep(5000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    t.stopTask(Clock.getInstance());
+    t.stopTask();
     Clock.getInstance().stopTimer();
   }
 
@@ -136,49 +136,49 @@ public class Application {
     projectTimeTracker.addActivity(readHandout);
     projectTimeTracker.addActivity(firstMilestone);
 
-    tasktransportation.startTask(Clock.getInstance());
+    tasktransportation.startTask();
     try {
       Thread.currentThread().sleep(4000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    tasktransportation.stopTask(Clock.getInstance());
+    tasktransportation.stopTask();
     try {
       Thread.currentThread().sleep(2000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    firstList.startTask(Clock.getInstance());
+    firstList.startTask();
     try {
       Thread.currentThread().sleep(6000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    secondList.startTask(Clock.getInstance());
+    secondList.startTask();
     try {
       Thread.currentThread().sleep(4000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    firstList.stopTask(Clock.getInstance());
+    firstList.stopTask();
     try {
       Thread.currentThread().sleep(2000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    secondList.stopTask(Clock.getInstance());
+    secondList.stopTask();
     try {
       Thread.currentThread().sleep(2000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    tasktransportation.startTask(Clock.getInstance());
+    tasktransportation.startTask();
     try {
       Thread.currentThread().sleep(4000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    tasktransportation.stopTask(Clock.getInstance());
+    tasktransportation.stopTask();
     c.stopTimer();
   }
 
@@ -277,12 +277,6 @@ public class Application {
 
   }
 
-  /**
-   *
-   * @param activity
-   * @param period
-   * @return
-   */
   public Duration TotalTimeSpent(Activity activity, timePeriods period)
   {
      return activity.TotalTimeSpent(period);

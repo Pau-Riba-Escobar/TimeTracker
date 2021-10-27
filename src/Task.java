@@ -3,7 +3,14 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+/** <h2> Clase Task </h2>
+ * Esta clase representa una tarea.
+ * Las tareas heredan metodos y atributos de actividad.
+ * Una Tarea contiene ademas:
+ *    - Lista de intervalos (intervals)
+ *    - Numeros de intervalos (nIntervals)
+ *    - Su utlima duración actualizada (lastUpdateDuration)
+ */
 public class Task extends Activity{
   private List<Interval> intervals;
   private int nIntervals;
@@ -15,7 +22,10 @@ public class Task extends Activity{
      this.setParentProject(parent);
   }
   */
-
+  /**<h2>constructor de Task</h2>
+   * @param name -> nombre de la Tarea (string)
+   *             es necsario para construir una tarea.
+   */
   public Task(String name)
   {
     this.setName(name);
@@ -40,13 +50,21 @@ public class Task extends Activity{
     * }*/
     return Duration.ZERO;
   }
-  public void startTask(Clock clock)
+/**<h2> Start Task</h2>
+ * En esta función empezariamos o activaremos
+ * una tarea (no crearla). Añadimos un intervalo
+ * a la lista de intervalos de la tarea. Ese inter-
+ * valo se añade al reloj (como observador), donde en
+ * paralelo contaremos su duracion (Observer).
+ * Si queremos activar la tarea y ya esta previamente
+ * activada, mostraremos un mensaje.
+ * */
+  public void startTask()
   {
     if(!isActive())
     {
       Interval i = new Interval();
       addInterval(i);
-      clock.addObserver(i);
       changeState();
       System.out.print(getName()+" starts\n");
     }
@@ -55,11 +73,19 @@ public class Task extends Activity{
     }
 
   }
-  public void stopTask(Clock clock){
+/**
+ * <h2>Stop task</h2>
+ * En esta función paramos la activación de
+ * una tarea (ya no la estamos realizando).
+ * Seleccionamos el ultimo intervalo de la lista
+ * de intervalos de la tarea y hacemos que deje de actualizar
+ * sus tiempos con el reloj (observer)
+ */
+  public void stopTask(){
     if(isActive())
     {
       Interval intervalToDelete = intervals.get(nIntervals-1);
-      clock.deleteObserver(intervalToDelete);
+      Clock.getInstance().deleteObserver(intervalToDelete);
       changeState();
       lastUpdateDuration = Duration.ZERO;
       System.out.print(getName()+" stops\n");
@@ -68,7 +94,10 @@ public class Task extends Activity{
       System.out.print("Cannot start task because it is already unactive");
     }
   }
-  //deleteInterval has currently no use but it can be used as a destructor if we want to delete a task
+  /** <h2>Eliminar un intervalo</h2>
+   * actualmente no tiene uso, puede servir
+   * para el destructor. Elimina un intervalo.
+   */
   public void deleteInterval(Interval i)
   {
     intervals.remove(i);
@@ -80,11 +109,24 @@ public class Task extends Activity{
     intervals.add(interval);
     nIntervals++;
   }
-
+  /**
+   *  Actualmente gracias al patron visitor
+   *  no es necesaria. La implementación InfoPrinter ya
+   *  permite imprimir la información de la clase a través
+   *  del método visit()
+   *  @deprecated
+   */
   @Override
   public void printInfo() {
     System.out.print("Task "+getName()+" child of "+getParentProject().getName()+"  "+getInitialDateTime()+"  "+getFinalDateTime()+"  "+getDuration().toSeconds()+"\n");
   }
+  /** <h2> accept </h2>
+   * En esta función estamos acceptando la clase visitante
+   * para visitarla y que aplique nuevas funcionalidades
+   * externas a la clase Task. Aplicamos el patron de
+   * diseño visitor.
+   * @param visitor - objeto visitor para aplicar patrón.
+   */
   @Override
   public void accept(Visitor visitor){
     visitor.visit(this);
@@ -93,6 +135,13 @@ public class Task extends Activity{
       i.accept(visitor);
     }
   }
+  /**<h2> Recalculate times</h2>
+   * En esta función actualizamos fechas y duración de
+   * la tarea. Fecha final = Fecha final del ultimo
+   * intervalo de la lista de intervalos.
+   * La duracion = duración - ultima actualización de duracion
+   * + la duración del ultimo intervalo de la lista de intervalos.
+   */
   public void recalculateTimes(){
     // sumar la duración del último intervalo a la tarea
     Duration currentDuration = getDuration();

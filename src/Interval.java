@@ -27,6 +27,7 @@ public class Interval implements Observer {
     end=LocalDateTime.now();
     duration=Duration.ZERO;
     parentTask=null;
+    Clock.getInstance().addObserver(this);
   }
   public Duration getDuration(){return duration;}
   public LocalDateTime getStart(){return  start;}
