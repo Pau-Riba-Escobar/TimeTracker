@@ -10,12 +10,15 @@ import java.time.LocalDateTime;
 public abstract class Activity {
 
   private String name;
+  private String tag;
   private  LocalDateTime initialDateTime;
   private  LocalDateTime finalDateTime;
   private Duration duration;
   private boolean active;
   private Project parentProject;
   public String getName(){ return name;}
+
+  public String getTag() {return tag;}
 
   public LocalDateTime getInitialDateTime(){return initialDateTime;}
 
@@ -29,6 +32,9 @@ public abstract class Activity {
 
   // Setters for name, finalDateTime and parentProject
   public void setName(String name){this.name=name;}
+
+  public void setTag(String tag) {this.tag = tag;}
+
   // When we set a finalDateTime we also calculate the Duration of the Activity. Because we should only use this method
   //when we finish an Activity we also calculate its duration
   public  void setInitialDateTime(LocalDateTime time){initialDateTime=time;}
@@ -41,6 +47,7 @@ public abstract class Activity {
 
   public Activity(){
     name = "No name has been assigned to the activity";
+    tag = "NO TAG";
     initialDateTime = LocalDateTime.now();
     finalDateTime = LocalDateTime.now();
     duration = Duration.ZERO;

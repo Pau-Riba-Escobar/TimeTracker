@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * <h2>Clase {@code SearcherByName}</h2>
  * Implementación de la interfaz visitor que nos permite encontrar una actividad según su nombre. Se usará a la
@@ -7,20 +9,18 @@
  * visitados tengan un nombre coincidente con {@code name}. En tal caso copiaremos esos objetos al otro atributo de la clase
  * {@code correspondingObj} que almacenará la {@code Activity} cuyo nombre es {@code name}
  */
-public class SearcherByName implements Visitor{
+public class SearcherByName extends Searcher{
   private String name;
-  private Activity correspondingObj;
-  public SearcherByName(String name){this.name = name;correspondingObj=null;}
+  public SearcherByName(String name){this.name = name;}
 
-  public Activity getCorrespondingObj() {
-    return correspondingObj;
-  }
+
 
   @Override
   public void visit(Project project) {
     if(project.getName().equals(name))
     {
-      correspondingObj = project;
+      List<Activity> objectList = getObjList();
+      objectList.add(project);
     }
   }
 
@@ -28,7 +28,8 @@ public class SearcherByName implements Visitor{
   public void visit(Task task) {
     if(task.getName().equals(name))
     {
-      correspondingObj = task;
+      List<Activity> objectList = getObjList();
+      objectList.add(task);
     }
   }
 

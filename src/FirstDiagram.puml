@@ -40,6 +40,8 @@ package core{
     interface Visitor
     class InfoPrinter
     class JSONWriter
+    abstract Searcher
+    class SearcherByTag
     class SearcherByName
 }
 
@@ -48,6 +50,7 @@ interface Visitor{
     +{abstract}visit(project:Project):void
     +{abstract}visit(interval:Interval):void
 }
+
 class InfoPrinter{
     +visit(task:Task):void
     +visit(project:Project):void
@@ -59,15 +62,27 @@ class JSONWriter{
     +visit(project:Project):void
     +visit(interval:Interval):void
 }
+abstract class Searcher{
+    - correspondingObj:List<Activity>
+    +{abstract}visit(task:Task):void
+    +{abstract}visit(project:Project):void
+    +{abstract}visit(interval:Interval):void
+}
 class SearcherByName{
     - name:String
-    - correspondingObj:Activity
+    +visit(task:Task):void
+    +visit(project:Project):void
+    +visit(interval:Interval):void
+}
+class SearcherByTag{
+    - tag:String
     +visit(task:Task):void
     +visit(project:Project):void
     +visit(interval:Interval):void
 }
 abstract Activity{
     - name: String
+    -tag: String
     - initalDateTime: LocalDateTime
     - finalDateTime: LocalDateTime
     - duration: Duration
@@ -80,8 +95,9 @@ abstract Activity{
 }
 class Application{
     + TotalTimeSpent(activity: Activity,period: int ):LocalDateTime
-    + readDataFromJSON():void
-    + saveDataToJSON(): void
+    + {static}buildTreeFromJSON():void
+    + {static}writeJSON(): void
+    + {static}searchByTag(tag: String):List<Activity>
     + {static}main(String[]: args):void
     + {static}testCreateHierarchy():void
     + {static}testClock():void
@@ -129,7 +145,9 @@ Clock --|> Observable
 Interval ..|> Observer
 Visitor<|..InfoPrinter
 Visitor<|..JSONWriter
-Visitor<|..SearcherByName
+Visitor<|..Searcher
+Searcher<|--SearcherByName
+Searcher<|--SearcherByTag
 
 
 

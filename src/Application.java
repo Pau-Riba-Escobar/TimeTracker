@@ -38,10 +38,13 @@ public class Application {
   {
     // Clock c = Clock.getInstance();
     // c.startTimer();
-    //testCreateHierarchy();
+    rootProject.setTag("ROOT");
+    testCreateHierarchy();
+    List<Activity> matchingActivities = SearchByTag("ROOT");
+    System.out.print("DONE");
     // c.stopTimer();
-    // writeJSON();
-    buildTreeFromJSON();
+    //writeJSON();
+    //buildTreeFromJSON();
     // testCreateHierarchy();
   }
 
@@ -229,24 +232,26 @@ public class Application {
       {
         case "Project":
           Project project = new Project(jsonObject.get("name").toString());
+          project.setTag(jsonObject.get("tag").toString());
           project.setInitialDateTime(LocalDateTime.parse(jsonObject.get("initial_data").toString()));
           project.setFinalDateTime(LocalDateTime.parse(jsonObject.get("final_data").toString()));
           project.setDuration(Duration.parse(jsonObject.get("duration").toString()));
           SearcherByName psearcher = new SearcherByName(jsonObject.get("parentname").toString());
           rootProject.accept(psearcher);
-          Project parent = (Project)psearcher.getCorrespondingObj();
-          project.setParentProject((Project)psearcher.getCorrespondingObj());
+          Project parent = (Project)(psearcher.getObjList().get(0));
+          project.setParentProject(parent);
           parent.addActivity(project);
           break;
         case "Task":
           Task  task = new Task(jsonObject.get("name").toString());
+          task.setTag(jsonObject.get("tag").toString());
           task.setInitialDateTime(LocalDateTime.parse(jsonObject.get("initial_data").toString()));
           task.setFinalDateTime(LocalDateTime.parse(jsonObject.get("final_data").toString()));
           task.setDuration(Duration.parse(jsonObject.get("duration").toString()));
           SearcherByName tsearcher = new SearcherByName(jsonObject.get("parentname").toString());
           rootProject.accept(tsearcher);
-          Project parentProject = (Project)tsearcher.getCorrespondingObj();
-          task.setParentProject((Project)tsearcher.getCorrespondingObj());
+          Project parentProject = (Project)(tsearcher.getObjList().get(0));
+          task.setParentProject(parentProject);
           parentProject.addActivity(task);
           break;
         case "Interval":
@@ -256,8 +261,8 @@ public class Application {
           interval.setDuration(Duration.parse(jsonObject.get("duration").toString()));
           SearcherByName isearcher = new SearcherByName(jsonObject.get("parentname").toString());
           rootProject.accept(isearcher);
-          Task parentTask = (Task)isearcher.getCorrespondingObj();
-          interval.setParentTask((Task)isearcher.getCorrespondingObj());
+          Task parentTask = (Task)(isearcher.getObjList().get(0));
+          interval.setParentTask(parentTask);
           parentTask.addInterval(interval);
           break;
 
@@ -265,7 +270,12 @@ public class Application {
     }
     System.out.print("DONE");
   }
-
+  public static List<Activity> SearchByTag(String tag)
+  {
+    SearcherByTag searcher = new SearcherByTag(tag);
+    rootProject.accept(searcher);
+    return searcher.getObjList();
+  }
   /**
    * Este método nos permite imprimir la información del árbol por pantalla a partir de un
    * objeto de la clase {@code InfoPrinter} que implementa la interfaz {@code Visitor}

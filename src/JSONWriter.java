@@ -14,29 +14,30 @@ import java.time.format.DateTimeFormatter;
 public class JSONWriter implements Visitor{
   private JSONArray jsonArray=new JSONArray();
   public JSONArray getJsonArray(){return jsonArray;}
+  private JSONObject buildActivity(JSONObject JAct, Activity activity)
+  {
+    JAct.put("name", activity.getName() );
+    JAct.put("tag",activity.getTag());
+    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    JAct.put("initial_data",activity.getInitialDateTime().format(formatter));
+    JAct.put("final_data", activity.getFinalDateTime().format(formatter));
+    JAct.put("duration", activity.getDuration().toString());
+    JAct.put("parentname", (activity.getParentProject()==null)?"null":activity.getParentProject().getName());
+    return JAct;
+  }
   @Override
   public void visit(Project project) {
     JSONObject Jproject = new JSONObject();
-    Jproject.put("name", project.getName() );
-    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-    Jproject.put("initial_data",project.getInitialDateTime().format(formatter));
-    Jproject.put("final_data", project.getFinalDateTime().format(formatter));
-    Jproject.put("duration", project.getDuration().toString());
-    Jproject.put("parentname", (project.getParentProject()==null)?"null":project.getParentProject().getName());
     Jproject.put("type","Project");
+    Jproject = buildActivity(Jproject,project);
     jsonArray.put(Jproject);
   }
 
   @Override
   public void visit(Task task) {
     JSONObject Jtask = new JSONObject();
-    Jtask.put("name", task.getName() );
-    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-    Jtask.put("initial_data",task.getInitialDateTime().format(formatter));
-    Jtask.put("final_data", task.getFinalDateTime().format(formatter));
-    Jtask.put("duration", task.getDuration().toString());
-    Jtask.put("parentname", task.getParentProject().getName());
     Jtask.put("type","Task");
+    Jtask = buildActivity(Jtask,task);
     jsonArray.put(Jtask);
   }
 
