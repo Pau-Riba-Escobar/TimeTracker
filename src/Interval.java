@@ -1,3 +1,8 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Observable;
@@ -26,6 +31,8 @@ public class Interval implements Observer {
   private LocalDateTime start;
   private LocalDateTime end;
   private Duration duration;
+  private static final Logger logger = LoggerFactory.getLogger("Interval");
+  private static final Marker fita1 = MarkerFactory.getMarker("F1");
 
   public Interval()
   {
@@ -94,7 +101,7 @@ public class Interval implements Observer {
    */
   public void printInfo()
   {
-    System.out.print("Interval child of "+parentTask.getName()+"  "+start+"  "+end+"  "+getDuration().toSeconds()+"\n");
+    logger.info(fita1,"Interval child of "+parentTask.getName()+"  "+start+"  "+end+"  "+getDuration().toSeconds()+"\n");
   }
 
   /**

@@ -1,3 +1,8 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 import java.lang.reflect.Array;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,7 +23,10 @@ public class Task extends Activity{
     if (!assertsEnabled)
       throw new RuntimeException("Asserts must be enabled!!!");
   }
-  private List<Interval> intervals;
+  private static final Logger logger = LoggerFactory.getLogger("Task");
+  private static final Marker fita1 = MarkerFactory.getMarker("F1");
+  private static final Marker fita2 = MarkerFactory.getMarker("F2");
+  private final List<Interval> intervals;
   private int nIntervals;
   private Duration lastUpdateDuration;
 
@@ -76,16 +84,17 @@ public class Task extends Activity{
  * */
   public void startTask()
   {
+    logger.trace(fita2, "Trying to start task " +getName()+"... \n");
     if(!isActive())
     {
       Interval i = new Interval();
       addInterval(i);
       changeState();
-      System.out.print(getName()+" starts\n");
+      logger.debug(fita1,getName()+" starts\n");
     }
     else{
       assert isActive(): "isActive not positive";
-      System.out.print("Cannot start task because it is already active");
+      logger.warn(fita1,"Cannot start task because it is already active");
     }
     assert isActive(): "isActive not positive";
   }
@@ -98,17 +107,18 @@ public class Task extends Activity{
  * sus tiempos con el reloj (observer)
  */
   public void stopTask(){
+    logger.trace(fita2, "Trying to stop task " +getName()+"... \n");
     if(isActive())
     {
       Interval intervalToDelete = intervals.get(nIntervals-1);
       Clock.getInstance().deleteObserver(intervalToDelete);
       changeState();
       lastUpdateDuration = Duration.ZERO;
-      System.out.print(getName()+" stops\n");
+      logger.debug(fita1,getName()+" stops\n");
     }
     else{
       assert !isActive(): "isActive true";
-      System.out.print("Cannot start task because it is already unactive");
+      logger.warn(fita1,"Cannot start task because it is already unactive");
     }
     assert !isActive(): "isActive true";
     assert !lastUpdateDuration.isNegative(): "duration not negative";
@@ -147,7 +157,7 @@ public class Task extends Activity{
    */
   @Override
   public void printInfo() {
-    System.out.print("Task "+getName()+" child of "+getParentProject().getName()+"  "+getInitialDateTime()+"  "+getFinalDateTime()+"  "+getDuration().toSeconds()+"\n");
+    logger.info(fita1,"Task "+getName()+" child of "+getParentProject().getName()+"  "+getInitialDateTime()+"  "+getFinalDateTime()+"  "+getDuration().toSeconds()+"\n");
   }
   /** <h2> accept </h2>
    * En esta función estamos acceptando la clase visitante

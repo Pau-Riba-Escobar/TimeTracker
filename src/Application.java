@@ -1,5 +1,9 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
@@ -29,6 +33,9 @@ public class Application {
    * de proyectos y tareas
    */
   private static Project rootProject=new Project("root");
+  private static final Logger logger = LoggerFactory.getLogger("Application");
+  private static final Marker fita2 = MarkerFactory.getMarker("F2");
+  private static final Marker fita1 = MarkerFactory.getMarker("F1");
 
   /**
    * La función principal que ejecutará las diferentes funcionalidades del proyecto así como los tests
@@ -41,7 +48,7 @@ public class Application {
     rootProject.setTag("ROOT");
     testCreateHierarchy();
     List<Activity> matchingActivities = SearchByTag("ROOT");
-    System.out.print("DONE");
+    logger.trace("DONE APPLICATION");
     //c.stopTimer();
     //writeJSON();
     //buildTreeFromJSON();
@@ -102,6 +109,7 @@ public class Application {
    */
   public static void testCreateHierarchy()
   {
+    logger.debug(fita2,"Starting application\n");
     Clock c = Clock.getInstance();
     c.startTimer();
     Timer t = c.getTimer();
@@ -138,7 +146,7 @@ public class Application {
     Task firstMilestone = new Task("first milestone");
     projectTimeTracker.addActivity(readHandout);
     projectTimeTracker.addActivity(firstMilestone);
-
+    logger.trace(fita2,"Printing the hierarchy of projects and tasks... \n");
     tasktransportation.startTask();
     try {
       Thread.currentThread().sleep(4000);

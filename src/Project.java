@@ -1,3 +1,8 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +20,9 @@ public class Project extends Activity{
     if (!assertsEnabled)
       throw new RuntimeException("Asserts must be enabled!!!");
   }
-  private List<Activity> activities = new ArrayList<Activity>();
+  private static final Logger logger = LoggerFactory.getLogger("Project");
+  private final List<Activity> activities = new ArrayList<>();
+  private static final Marker fita1 = MarkerFactory.getMarker("F1");
   /*
     public Project(String name, Project parentProject){
     this.setName(name);
@@ -122,6 +129,6 @@ public class Project extends Activity{
    */
   @Override
   public void printInfo() {
-    System.out.print("Project "+getName()+" child of "+((getParentProject()!=null)?getParentProject().getName():"null")+"  "+getInitialDateTime()+"  "+getFinalDateTime()+"  "+getDuration().toSeconds()+"\n");
+    logger.info(fita1,"Project "+getName()+" child of "+((getParentProject()!=null)?getParentProject().getName():"null")+"  "+getInitialDateTime()+"  "+getFinalDateTime()+"  "+getDuration().toSeconds()+"\n");
   }
 }
