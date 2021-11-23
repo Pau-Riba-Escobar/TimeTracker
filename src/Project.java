@@ -39,7 +39,7 @@ public class Project extends Activity{
     }
     this.setName(name);
 
-    assert this.getName() != null: "name null";
+    assert name_correct(): "name null";
     //assert this.getName() == name: "name not passed correctly";
   }
   /**<h2>Función para añadir una actividad</h2>
@@ -54,20 +54,27 @@ public class Project extends Activity{
     if(act.getName() == null){
       throw new IllegalArgumentException("Activity name null");
     }
+    int last_num = activities.size();
     activities.add(act);
     act.setParentProject(this);
 
     assert act.getParentProject() != null: "parent project null";
-    assert !activities.isEmpty(): "activities not empty later of puting an activity";
-    assert act.getParentProject() != null: "parent null";
+    assert !activities.isEmpty(): "activities empty later of puting an activity";
+    assert activities.size() == last_num + 1: "not coherent num of activities";
+    assert activities.contains(act): "act not contained";
   }
   public List<Activity> getActivities(){return activities;}
   @Override
   public Duration TotalTimeSpent(timePeriods period) {
+    if(period == null){
+      throw new IllegalArgumentException("period null");
+    }
     Duration totalTime = Duration.ZERO;
     for (Activity act:activities) {
       totalTime.plus(act.TotalTimeSpent(period));
     }
+    assert totalTime != null:"totaltime null";
+    assert !totalTime.isNegative(): "total time negative";
     return totalTime;
   }
   /**<h2> Funcion para recalcular tiempos</h2>
@@ -96,10 +103,9 @@ public class Project extends Activity{
     {
       parent.recalculateTimes();
     }
-    assert this.getFinalDateTime() != null: "FinalDateTime null";
-    assert this.getFinalDateTime().getYear() >= 0: "FinalDateTime Year Negative";
-    assert this.getDuration() != null: "Duration negative";
-    assert !this.getDuration().isNegative(): "Duration is negative";
+    assert finalTime_correct(): "FinalDateTime not correct";
+    assert duration_correct(): "duration not correct";
+
     //printInfo();
   }
   /** <h2> accept </h2>

@@ -22,31 +22,54 @@ public abstract class Activity {
   private Duration duration;
   private boolean active;
   private Project parentProject;
-  private boolean atributes_correct(){
-    if(name == null)
-      return false;
-    if(tag == null)
-      return false;
-    if(initialDateTime == null)
-      return false;
-    else if(initialDateTime.getYear() < 0)
-      return false;
-    if(finalDateTime == null)
-      return false;
-    else if(finalDateTime.getYear() < 0)
-      return false;
-    if(duration == null)
-      return false;
-    else if(duration.isNegative())
-      return false;
 
+  protected boolean name_correct(){
+    if(this.name == null)
+      return false;
     return true;
   }
-  public String getName(){ return name;}
 
-  public String getTag() {return tag;}
+  protected boolean tag_correct(){
+    if(this.tag == null)
+      return false;
+    return true;
+  }
+
+  protected boolean duration_correct(){
+    if(this.duration == null){
+      return false;
+    }else if(this.duration.isNegative()){
+      return false;
+    }
+    return true;
+  }
+
+  protected boolean initialTime_correct(){
+    if(this.initialDateTime == null)
+      return false;
+    else if(this.initialDateTime.getYear() < 0)
+      return false;
+    return true;
+  }
+
+  protected boolean finalTime_correct(){
+    if(this.finalDateTime == null)
+      return false;
+    else if(this.finalDateTime.getYear() < 0)
+      return false;
+    return true;
+  }
+
+  public String getName(){
+    return name;
+  }
+
+  public String getTag() {
+    return tag;
+  }
 
   public LocalDateTime getInitialDateTime(){
+
     return initialDateTime;
   }
 
@@ -68,7 +91,7 @@ public abstract class Activity {
       throw new IllegalArgumentException("name null");
     }
     this.name=name;
-    assert this.name != null:"name null";
+    assert name_correct():"name null";
     //assert this.name == name:"name passed correctly";
   }
 
@@ -78,7 +101,7 @@ public abstract class Activity {
     }
     this.tag = tag;
 
-    assert this.tag != null:"tag null";
+    assert tag_correct():"tag null";
     //assert this.tag == tag:"tag not passed correctly";
   }
 
@@ -94,9 +117,7 @@ public abstract class Activity {
 
     initialDateTime=time;
 
-    assert this.initialDateTime != null:"initialDateTime null";
-    assert this.initialDateTime.getYear() >= 0:"Initial Year Negative";
-    //assert this.initialDateTime == time:"initial Time not passed";
+    assert initialTime_correct(): "this.initialTime error value atribute";
   }
   public void setFinalDateTime(LocalDateTime time){
     if(time == null){
@@ -110,9 +131,7 @@ public abstract class Activity {
     }*/
     finalDateTime = time;
 
-    assert this.finalDateTime != null:"FinalDateTime null";
-    assert this.finalDateTime.getYear() >= 0:"Final Year Negative";
-    //assert this.finalDateTime == time:"final Time not pased";
+    assert initialTime_correct(): "this.finalTime error value atribute";
   }
   //duration=Duration.between(initialDateTime,finalDateTime);}
   public void setDuration(Duration d){
@@ -124,8 +143,7 @@ public abstract class Activity {
     }
     duration=d;
 
-    assert this.duration != null:"duration null";
-    assert !this.duration.isNegative():"duration negative";
+    assert duration_correct(): "duration atribute value not correct";
     //assert this.duration == d:"duration not pased";
   }
   public void setParentProject(Project p){
@@ -144,7 +162,11 @@ public abstract class Activity {
     duration = Duration.ZERO;
     active = false;
     parentProject=null;
-    assert atributes_correct(): "atributos no correctos";
+    assert name_correct(): "name atribue error";
+    assert tag_correct(): "tag atribute error";
+    assert initialTime_correct():"initialtime atribute error";
+    assert finalTime_correct():"finalTime atribute error";
+    assert duration_correct():"duration atribute error";
   }
 
   /*

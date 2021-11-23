@@ -3,7 +3,11 @@ import java.util.List;
 public class SearcherByTag extends Searcher{
   private String tag;
   public SearcherByTag(String tag){
+    if(tag == null){
+      throw new IllegalArgumentException("tag null");
+    }
     this.tag = tag;
+    assert this.tag != null: "this.tag null";
   }
   @Override
   public void visit(Project project) {
