@@ -8,6 +8,12 @@ import java.time.LocalDateTime;
  * es su proyecto padre({@code parentProject})
  */
 public abstract class Activity {
+  static {
+    boolean assertsEnabled = false;
+    assert assertsEnabled = true; // Intentional side effect!!!
+    if (!assertsEnabled)
+      throw new RuntimeException("Asserts must be enabled!!!");
+  }
 
   private String name;
   private String tag;
@@ -16,31 +22,116 @@ public abstract class Activity {
   private Duration duration;
   private boolean active;
   private Project parentProject;
+  private boolean atributes_correct(){
+    if(name == null)
+      return false;
+    if(tag == null)
+      return false;
+    if(initialDateTime == null)
+      return false;
+    else if(initialDateTime.getYear() < 0)
+      return false;
+    if(finalDateTime == null)
+      return false;
+    else if(finalDateTime.getYear() < 0)
+      return false;
+    if(duration == null)
+      return false;
+    else if(duration.isNegative())
+      return false;
+
+    return true;
+  }
   public String getName(){ return name;}
 
   public String getTag() {return tag;}
 
-  public LocalDateTime getInitialDateTime(){return initialDateTime;}
+  public LocalDateTime getInitialDateTime(){
+    return initialDateTime;
+  }
 
-  public LocalDateTime getFinalDateTime(){return finalDateTime;}
+  public LocalDateTime getFinalDateTime(){
+    return finalDateTime;
+  }
 
-  public Duration getDuration() {return duration;}
+  public Duration getDuration() {
+    return duration;
+  }
 
   public Project getParentProject(){return parentProject;}
 
   public boolean isActive() {return active;}
 
   // Setters for name, finalDateTime and parentProject
-  public void setName(String name){this.name=name;}
+  public void setName(String name){
+    if(name == null){
+      throw new IllegalArgumentException("name null");
+    }
+    this.name=name;
+    assert this.name != null:"name null";
+    //assert this.name == name:"name passed correctly";
+  }
 
-  public void setTag(String tag) {this.tag = tag;}
+  public void setTag(String tag) {
+    if(tag == null){
+      throw new IllegalArgumentException("Tag null");
+    }
+    this.tag = tag;
+
+    assert this.tag != null:"tag null";
+    //assert this.tag == tag:"tag not passed correctly";
+  }
 
   // When we set a finalDateTime we also calculate the Duration of the Activity. Because we should only use this method
   //when we finish an Activity we also calculate its duration
-  public  void setInitialDateTime(LocalDateTime time){initialDateTime=time;}
-  public void setFinalDateTime(LocalDateTime time){finalDateTime = time;}//duration=Duration.between(initialDateTime,finalDateTime);}
-  public void setDuration(Duration d){duration=d;}
-  public void setParentProject(Project p){parentProject=p;}
+  public  void setInitialDateTime(LocalDateTime time){
+    if(time == null){
+      throw new IllegalArgumentException("Time null");
+    }
+    if(time.getYear() < 0){
+      throw new IllegalArgumentException("Negative Yearl");
+    }
+
+    initialDateTime=time;
+
+    assert this.initialDateTime != null:"initialDateTime null";
+    assert this.initialDateTime.getYear() >= 0:"Initial Year Negative";
+    //assert this.initialDateTime == time:"initial Time not passed";
+  }
+  public void setFinalDateTime(LocalDateTime time){
+    if(time == null){
+      throw new IllegalArgumentException("Time null");
+    }
+    if(time.getYear() < 0){
+      throw new IllegalArgumentException("Negative Yearl");
+    }
+    /*if(time.isBefore(initialDateTime)){
+      throw new IllegalArgumentException("finalDate before initialDate");
+    }*/
+    finalDateTime = time;
+
+    assert this.finalDateTime != null:"FinalDateTime null";
+    assert this.finalDateTime.getYear() >= 0:"Final Year Negative";
+    //assert this.finalDateTime == time:"final Time not pased";
+  }
+  //duration=Duration.between(initialDateTime,finalDateTime);}
+  public void setDuration(Duration d){
+    if(d == null){
+      throw new IllegalArgumentException("duration null");
+    }
+    if(d.isNegative()){
+      throw new IllegalArgumentException("negative duration");
+    }
+    duration=d;
+
+    assert this.duration != null:"duration null";
+    assert !this.duration.isNegative():"duration negative";
+    //assert this.duration == d:"duration not pased";
+  }
+  public void setParentProject(Project p){
+    parentProject=p;
+    //assert parentProject == p:"parent passed correctly";
+  }
   // if the Activity is currently active, now will be deactivated, and if it is deactivated this method will activate it.
   public void changeState(){active=(!active);}
 
@@ -53,6 +144,7 @@ public abstract class Activity {
     duration = Duration.ZERO;
     active = false;
     parentProject=null;
+    assert atributes_correct(): "atributos no correctos";
   }
 
   /*

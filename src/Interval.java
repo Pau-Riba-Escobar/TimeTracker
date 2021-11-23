@@ -16,6 +16,12 @@ import java.util.Observer;
  * se almacena en el atributo {@code parentTask}.
  */
 public class Interval implements Observer {
+  static {
+    boolean assertsEnabled = false;
+    assert assertsEnabled = true; // Intentional side effect!!!
+    if (!assertsEnabled)
+      throw new RuntimeException("Asserts must be enabled!!!");
+  }
   private Task parentTask;
   private LocalDateTime start;
   private LocalDateTime end;
@@ -28,15 +34,55 @@ public class Interval implements Observer {
     duration=Duration.ZERO;
     parentTask=null;
     Clock.getInstance().addObserver(this);
+
+    assert start != null: "start null";
+    assert start.getYear() >= 0: "start year negative";
+    assert end != null: "end null";
+    assert end.getYear() >= 0: "start year negative";
+    assert duration != null: "duration null";
+    assert !duration.isNegative(): "duration is negative";
   }
   public Duration getDuration(){return duration;}
   public LocalDateTime getStart(){return  start;}
   public LocalDateTime getEnd(){return end;}
   public Task getParentTask(){return parentTask;}
   public void setParentTask(Task parent){parentTask=parent;}
-  public void setStart(LocalDateTime start) {this.start = start;}
-  public void setDuration(Duration duration) {this.duration = duration;}
-  public void setEnd(LocalDateTime end) {this.end = end;}
+  public void setStart(LocalDateTime start) {
+    if(start == null){
+      throw new IllegalArgumentException("LocalDateTime start is null");
+    }
+    if(start.getYear() < 0){
+      throw new IllegalArgumentException("LocalDateTime start year negative");
+    }
+    this.start = start;
+
+    assert this.start != null: "this.start is null";
+    assert this.start.getYear() >= 0 :"this.start is negtaive";
+  }
+  public void setDuration(Duration duration) {
+    if(duration == null){
+      throw new IllegalArgumentException("duration null ");
+    }
+    if(duration.isNegative()){
+      throw new IllegalArgumentException("duration negative");
+    }
+    this.duration = duration;
+
+    assert this.duration != null:"this.duration null";
+    assert !this.duration.isNegative():"this.duration is negative";
+  }
+  public void setEnd(LocalDateTime end) {
+    if(end == null){
+      throw new IllegalArgumentException("LocalDateTime end is null");
+    }
+    if(end.getYear() < 0){
+      throw new IllegalArgumentException("LocalDateTime end year negative");
+    }
+    this.end = end;
+
+    assert this.end != null: "this.end null";
+    assert this.end.getYear() >= 0: "thisend year negative";
+  }
   public void accept(Visitor visitor)
   {
     visitor.visit(this);
@@ -62,8 +108,11 @@ public class Interval implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
+    assert o != null: "observable null";
     end = (LocalDateTime)arg;
     duration = Duration.between(start,end);
     parentTask.recalculateTimes();
+    assert duration != null: "duration is null";
+    assert !duration.isNegative(): "duration is negative";
   }
 }

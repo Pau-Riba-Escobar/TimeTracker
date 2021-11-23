@@ -42,10 +42,10 @@ public class Application {
     testCreateHierarchy();
     List<Activity> matchingActivities = SearchByTag("ROOT");
     System.out.print("DONE");
-    // c.stopTimer();
+    //c.stopTimer();
     //writeJSON();
     //buildTreeFromJSON();
-    // testCreateHierarchy();
+    //testCreateHierarchy();
   }
 
   /**
@@ -265,6 +265,8 @@ public class Application {
           interval.setParentTask(parentTask);
           parentTask.addInterval(interval);
           break;
+        default:
+          assert false: "Type  is not Project, task or Interval";
 
       }
     }

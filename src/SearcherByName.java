@@ -11,7 +11,13 @@ import java.util.List;
  */
 public class SearcherByName extends Searcher{
   private String name;
-  public SearcherByName(String name){this.name = name;}
+  public SearcherByName(String name){
+    if(name == null){
+      throw new IllegalArgumentException("name null");
+    }
+    this.name = name;
+    assert this.name != null:"name null";
+  }
 
 
 

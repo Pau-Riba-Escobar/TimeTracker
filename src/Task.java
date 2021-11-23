@@ -12,6 +12,12 @@ import java.util.List;
  *    - Su utlima duración actualizada (lastUpdateDuration)
  */
 public class Task extends Activity{
+  static {
+    boolean assertsEnabled = false;
+    assert assertsEnabled = true; // Intentional side effect!!!
+    if (!assertsEnabled)
+      throw new RuntimeException("Asserts must be enabled!!!");
+  }
   private List<Interval> intervals;
   private int nIntervals;
   private Duration lastUpdateDuration;
@@ -28,10 +34,19 @@ public class Task extends Activity{
    */
   public Task(String name)
   {
+    //assert name != null: "null name";
+    if(name == null){
+      throw new IllegalArgumentException("name null");
+    }
     this.setName(name);
     nIntervals=0;
     intervals=new ArrayList<Interval>();
     lastUpdateDuration=Duration.ZERO;
+
+    assert this.getName() != null: "name null";
+    assert this.nIntervals >= 0: "nIntervals negative";
+    assert !this.lastUpdateDuration.isNegative(): "duration negative";
+
   }
   public int getnIntervals(){return nIntervals;}
   public Duration TotalTimeSpent(timePeriods period) {
@@ -69,9 +84,10 @@ public class Task extends Activity{
       System.out.print(getName()+" starts\n");
     }
     else{
+      assert isActive(): "isActive not positive";
       System.out.print("Cannot start task because it is already active");
     }
-
+    assert isActive(): "isActive not positive";
   }
 /**
  * <h2>Stop task</h2>
@@ -91,23 +107,36 @@ public class Task extends Activity{
       System.out.print(getName()+" stops\n");
     }
     else{
+      assert !isActive(): "isActive true";
       System.out.print("Cannot start task because it is already unactive");
     }
+    assert !isActive(): "isActive true";
+    assert !lastUpdateDuration.isNegative(): "duration not negative";
   }
   /** <h2>Eliminar un intervalo</h2>
    * actualmente no tiene uso, puede servir
    * para el destructor. Elimina un intervalo.
    */
-  public void deleteInterval(Interval i)
+  private void deleteInterval(Interval i)
   {
+    assert !intervals.isEmpty():"list intervals empty";
+    assert i != null: "interval null";
+    assert nIntervals > 0: "nIntervals 0 or negative";
     intervals.remove(i);
     nIntervals--;
+    assert nIntervals >= 0: "nIntervals negative";
   }
   public void addInterval(Interval interval)
   {
+    if(interval == null){
+      throw new IllegalArgumentException("interval null");
+    }
     interval.setParentTask(this);
     intervals.add(interval);
     nIntervals++;
+    assert nIntervals > 0: "nIntervals 0 or negative" + nIntervals;
+    assert !intervals.isEmpty(): "intervals empty";
+    assert interval.getParentTask() != null: "interval parent null";
   }
   /**
    *  Actualmente gracias al patron visitor
@@ -151,8 +180,12 @@ public class Task extends Activity{
     currentDuration = currentDuration.plus(lastInterval.getDuration());
     setDuration(currentDuration);
     Project parent = getParentProject();
+    assert parent != null: "parent null";
+    assert parent.getName() != null: "parent name null";
     setFinalDateTime(lastInterval.getEnd());
     parent.recalculateTimes();
     //printInfo();
+    assert !lastUpdateDuration.isNegative(): "LastUpdateDuratin negative";
+    assert !this.getDuration().isNegative(): "Update negative";
   }
 }

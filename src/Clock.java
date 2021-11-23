@@ -41,6 +41,7 @@ public class Clock extends Observable {
       }
     };
     timer.scheduleAtFixedRate(task,Date.from(Instant.now()),2000);
+
   }
   public Timer getTimer(){return timer;}
 

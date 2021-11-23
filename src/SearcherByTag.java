@@ -2,7 +2,9 @@ import java.util.List;
 
 public class SearcherByTag extends Searcher{
   private String tag;
-  public SearcherByTag(String tag){this.tag = tag;}
+  public SearcherByTag(String tag){
+    this.tag = tag;
+  }
   @Override
   public void visit(Project project) {
     if(project.getTag().equals(tag))
