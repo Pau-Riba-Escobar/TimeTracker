@@ -1,10 +1,3 @@
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,34 +8,45 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.lang.Thread;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * <h2>Clase Principal({@code Application})</h2>
- * El TimeTracker es un tipo de aplicación que nos permite crear una jerarquía de actividades( proyectos o tareas)
+ * El TimeTracker es un tipo de aplicación que nos permite
+ * crear una jerarquía de actividades( proyectos o tareas)
  * y controlar el tiempo que dedicamos a cada una de estas actividades.
- *
  * Esta es la clases que controla al programa. Aquí podemos encontrar los tests para las
  * diferentes funcionalidades y la función main para que será el núcleo de ejecución de la
- * aplicación. También encontramos métodos para la persistencia de la sesión del TimeTracker.
- *
+ * aplicación. También encontramos métodos para la
+ * persistencia de la sesión del TimeTracker.
  */
 
 public class Application {
+
   /**
+   * classe Aplication
    * {@code rootProject} es el proyecto principal a partir del cual construiremos la jerarquía
    * de proyectos y tareas
    */
-  private static Project rootProject=new Project("root");
+
+  private static Project rootProject = new Project("root");
   private static final Logger logger = LoggerFactory.getLogger("Application");
   private static final Marker fita2 = MarkerFactory.getMarker("F2");
   private static final Marker fita1 = MarkerFactory.getMarker("F1");
 
   /**
-   * La función principal que ejecutará las diferentes funcionalidades del proyecto así como los tests
+   * La función principal que ejecutará las diferentes
+   * funcionalidades del proyecto así como los tests
+   *
    * @param args este parámetro actualmente no se usa
    */
-  public static void main(String[] args)
-  {
+
+  public static void main(String[] args) {
     // Clock c = Clock.getInstance();
     // c.startTimer();
     rootProject.setTag("ROOT");
@@ -56,11 +60,13 @@ public class Application {
   }
 
   /**
-   * test para comprobar si el reloj funciona. Creamos una jerarquía simple con un proyecto y una tarea
-   * y imprimimos ese arbol cada 2 segundos para ver como se va actualizando
+   * test para comprobar si el reloj funciona.
+   * Creamos una jerarquía simple con un proyecto y una tarea
+   * y imprimimos ese arbol cada 2 segundos
+   * para ver como se va actualizando
    */
-  public static void testClock()
-  {
+
+  public static void testClock() {
     Clock c = Clock.getInstance();
     c.startTimer();
     Timer timer = c.getTimer();
@@ -71,8 +77,8 @@ public class Application {
           printTree();
         }
       }
-    },Date.from(Instant.now()),2000);
-    Project p=new Project("root");
+    }, Date.from(Instant.now()), 2000);
+    Project p = new Project("root");
     Task t = new Task("task");
     p.addActivity(t);
     t.startTask();
@@ -98,18 +104,25 @@ public class Application {
   }
 
   /**
-   * En este test creamos una jerarquía de proyectos y tareas partiendo del proyecto {@code rootProject} y simulamos
-   * el funcionamiento real del proyecto poniendo tareas en marcha y parandolas. Así pues podemos observar
+   * En este test creamos una jerarquía de proyectos
+   * y tareas partiendo del proyecto {@code
+   * rootProject} y simulamos
+   * el funcionamiento real del proyecto poniendo
+   * tareas en marcha y parandolas. Así pues podemos observar
    * también el correcto funcionamiento del reloj.
-   *
-   * A partir de {@code rootProject} podremos comprobar si la jerarquía se ha construido correctamente
-   * y al igual que en {@code testClock()} planificamos la impresión del árbol cada 2 segundos y ver como se van
-   * sucediendo las actualizaciones( como se crean nuevos intervalos y como se actualiza el tiempo de Intervalos, Tareas
+   * A partir de {@code rootProject} podremos comprobar
+   * si la jerarquía se ha construido correctamente
+   * y al igual que en {@code testClock()} planificamos la
+   * impresión del árbol cada 2 segundos y ver como se van
+   * sucediendo las actualizaciones( como se
+   * crean nuevos intervalos
+   * y como se actualiza el tiempo de Intervalos, Tareas
    * y Proyectos)
    */
-  public static void testCreateHierarchy()
-  {
-    logger.debug(fita2,"Starting application\n");
+
+  public static void testCreateHierarchy() {
+
+    logger.debug(fita2, "Starting application\n");
     Clock c = Clock.getInstance();
     c.startTimer();
     Timer t = c.getTimer();
@@ -120,7 +133,7 @@ public class Application {
           printTree();
         }
       }
-    },Date.from(Instant.now()),2000);
+    }, Date.from(Instant.now()), 2000);
     // TOP LEVEL(0)
     Project softwareDesign = new Project("software design");
     Project softwareTesting = new Project("software testing");
@@ -146,7 +159,7 @@ public class Application {
     Task firstMilestone = new Task("first milestone");
     projectTimeTracker.addActivity(readHandout);
     projectTimeTracker.addActivity(firstMilestone);
-    logger.trace(fita2,"Printing the hierarchy of projects and tasks... \n");
+    logger.trace(fita2, "Printing the hierarchy of projects and tasks... \n");
     tasktransportation.startTask();
     try {
       Thread.currentThread().sleep(4000);
@@ -189,43 +202,66 @@ public class Application {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
+
     tasktransportation.stopTask();
     c.stopTimer();
   }
 
   /**
-   * Esta función implementa la persistencia de los datos de nuestra jerarquía. A partir de un objeto
-   * de la clase {@code JSONWriter} ,que implementa la interfaz {@code Visitor}, guardamos en su atributo
-   * {@code jsonArray} un {@code JSONArray}, que contendrá {@code JSONObjects} con información de Proyectos,
-   * Tareas o Intervalos, que luego vamos a escribir como {@code String} en un archivo txt. Este
-   * archivo txt nos permitirá posteriormente recuperar la sesión.
+   * Esta función implementa la
+   * persistencia de los datos de
+   * nuestra jerarquía. A partir de un objeto
+   * de la clase {@code JSONWriter} ,
+   * que implementa la
+   * interfaz {@code Visitor},guardamos en su atributo
+   * {@code jsonArray} un {@code JSONArray}, que
+   * contendrá {@code JSONObjects} con información de Proyectos,
+   * Tareas o Intervalos, que luego vamos a escribir como {@code String}
+   * en un archivo txt. Este
+   * archivo txt nos permitirá posteriormente
+   * recuperar la sesión.
    */
-  public static void writeJSON()
-  {
+  public static void writeJSON() {
+
     JSONWriter writer = new JSONWriter();
     rootProject.accept(writer);
-    try{
+
+    try {
+
       FileWriter fw = new FileWriter("jsonfile.txt");
       fw.write(writer.getJsonArray().toString());
       fw.close();
-    }catch(IOException e){e.printStackTrace();}
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
   }
 
   /**
-   * Este método nos permite recuperar la sesión guardada en el archivo {@code jsonfile.txt}. De
-   * este modo construimos la jerarquía que tenemos guardada en el archivo sobre el proyecto raíz {@code rootProject}. Obtendremos
-   * la información de los {@code JSONObjects} guardados y los reconstruiremos como los objetos correspondientes
+   * Este método nos permite recuperar la sesión guardada
+   * en el archivo {@code jsonfile.txt}. De
+   * este modo construimos la jerarquía que tenemos
+   * guardada en el archivo sobre el
+   * proyecto raíz {@code rootProject}. Obtendremos
+   * la información de los {@code JSONObjects} guardados y los
+   * reconstruiremos como los objetos correspondientes
    * a partir de su tipo({@code Project, Task, o Interval})
    */
-  public static void buildTreeFromJSON()
-  {
-    String rawdata="";
-    try{
+  public static void buildTreeFromJSON() {
+
+    String rawdata = "";
+
+    try {
+
       File file = new File("jsonfile.txt");
       Scanner scanner = new Scanner(file);
       rawdata = scanner.nextLine();
       scanner.close();
-    }catch(FileNotFoundException e){e.printStackTrace();}
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
     JSONArray data = new JSONArray(rawdata);
     JSONObject jsonObj = data.getJSONObject(0);
     rootProject.setName(jsonObj.get("name").toString());
@@ -233,20 +269,23 @@ public class Application {
     rootProject.setFinalDateTime(LocalDateTime.parse(jsonObj.get("final_data").toString()));
     rootProject.setDuration(Duration.parse(jsonObj.get("duration").toString()));
     data.remove(0);
-    for(int i=0;i< data.length();i++)
-    {
+
+    for (int i = 0; i < data.length(); i++) {
+
       JSONObject jsonObject = data.getJSONObject(i);
-      switch(jsonObject.get("type").toString())
-      {
+
+      switch (jsonObject.get("type").toString()) {
+
         case "Project":
           Project project = new Project(jsonObject.get("name").toString());
           project.setTag(jsonObject.get("tag").toString());
-          project.setInitialDateTime(LocalDateTime.parse(jsonObject.get("initial_data").toString()));
+          project.setInitialDateTime(LocalDateTime.parse(
+              jsonObject.get("initial_data").toString()));
           project.setFinalDateTime(LocalDateTime.parse(jsonObject.get("final_data").toString()));
           project.setDuration(Duration.parse(jsonObject.get("duration").toString()));
           SearcherByName psearcher = new SearcherByName(jsonObject.get("parentname").toString());
           rootProject.accept(psearcher);
-          Project parent = (Project)(psearcher.getObjList().get(0));
+          Project parent = (Project) (psearcher.getObjList().get(0));
           project.setParentProject(parent);
           parent.addActivity(project);
           break;
@@ -258,7 +297,7 @@ public class Application {
           task.setDuration(Duration.parse(jsonObject.get("duration").toString()));
           SearcherByName tsearcher = new SearcherByName(jsonObject.get("parentname").toString());
           rootProject.accept(tsearcher);
-          Project parentProject = (Project)(tsearcher.getObjList().get(0));
+          Project parentProject = (Project) (tsearcher.getObjList().get(0));
           task.setParentProject(parentProject);
           parentProject.addActivity(task);
           break;
@@ -269,36 +308,58 @@ public class Application {
           interval.setDuration(Duration.parse(jsonObject.get("duration").toString()));
           SearcherByName isearcher = new SearcherByName(jsonObject.get("parentname").toString());
           rootProject.accept(isearcher);
-          Task parentTask = (Task)(isearcher.getObjList().get(0));
+          Task parentTask = (Task) (isearcher.getObjList().get(0));
           interval.setParentTask(parentTask);
           parentTask.addInterval(interval);
           break;
         default:
-          assert false: "Type  is not Project, task or Interval";
-
+          assert false : "Type  is not Project, task or Interval";
       }
+
     }
     System.out.print("DONE");
   }
-  public static List<Activity> SearchByTag(String tag)
-  {
+
+  /**
+   * Buscamos por tag
+   *
+   * @param tag tag identificar project
+   *
+   * @return lista de actividades
+   */
+
+  public static List<Activity> SearchByTag(String tag) {
+
     SearcherByTag searcher = new SearcherByTag(tag);
     rootProject.accept(searcher);
     return searcher.getObjList();
+
   }
+
   /**
-   * Este método nos permite imprimir la información del árbol por pantalla a partir de un
-   * objeto de la clase {@code InfoPrinter} que implementa la interfaz {@code Visitor}
+   * Este método nos permite imprimir la información
+   * del árbol por pantalla a partir de un
+   * objeto de la clase {@code InfoPrinter} que
+   * implementa la interfaz {@code Visitor}
    */
-  public static void printTree()
-  {
-    InfoPrinter printer=new InfoPrinter();
+
+  public static void printTree() {
+
+    InfoPrinter printer = new InfoPrinter();
     rootProject.accept(printer);
 
   }
 
-  public Duration TotalTimeSpent(Activity activity, timePeriods period)
-  {
-     return activity.TotalTimeSpent(period);
+  /**
+   *
+   * @param activity actividad
+   * @param period YEARL, DAY, HOUR
+   * @return duracion de una actividad
+   */
+  public Duration TotalTimeSpent(Activity activity, timePeriods period) {
+
+    return activity.TotalTimeSpent(period);
+
   }
+
 }
